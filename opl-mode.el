@@ -57,12 +57,18 @@
 							"HOUR" "DAY" "MONTH" "YEAR" "ASC" "LEFT$" "MID$"
 							"RIGHT$" "LEN" "LOC" "LOWERS" "UPPER$" "REPTS" "VAL"
 							"ADDR" "PEEKB" "PEEKW" "USR" "USR$"))
+			 (x-lz-functions '("OFF" "UDG" "COPYW" "DELETEW" "CLOCK" "MENUN"
+							   "DIRW$" "FINDW" "ACOS" "ASIN" "DAYS" "DAYNAME$"
+							   "DOW" "MONTH$" "WEEK"))
 			 (x-keywords-regexp (regexp-opt x-keywords 'words))
-			 (x-functions-regexp (regexp-opt x-functions 'words)))
+			 (x-functions-regexp (regexp-opt x-functions 'words))
+			 (x-lz-functions-regexp (regexp-opt x-lz-functions 'words)))
 		`((,x-keywords-regexp . font-lock-keyword-face)
 		  (,x-functions-regexp . font-lock-builtin-face)
+		  (,x-lz-functions-regexp . font-lock-builtin-face)
 		  ("REM\s.+$" . font-lock-comment-face)
-		  ("[\w\d\$]+\:" . font-lock-function-name-face))))
+		  ("[A-Za-z0-9$%]+\=" . font-lock-variable-name-face)
+		  ("[A-Za-z0-9$%]+\:\(?" . font-lock-function-name-face))))
 
 ;;;###autoload
 (define-derived-mode opl-mode c-mode "OPL"
