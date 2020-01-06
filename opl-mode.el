@@ -1,12 +1,12 @@
-;;; opl-mode.el --- Organizer Programming Language major mode.
+;;; opl-mode --- Organizer Programming Language major mode.
 
 ;; Copyright (C) 2019 Nathan Campos
 
 ;; Author: Nathan Campos <nathan@innoveworkshop.com>
 ;; Homepage: http://github.com/nathanpc/opl-mode
 ;; Version: 0.1.0
-;; Keywords: convenience, usability
-;; Package-Requires: ((emacs "24.1"))
+;; Keywords: opl, basic, languages
+;; Package-Requires: ((emacs "24.1") (basic-mode "0.4.2"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -71,7 +71,7 @@
 		  ("[A-Za-z0-9$%]+\:\(?" . font-lock-function-name-face))))
 
 ;;;###autoload
-(define-derived-mode opl-mode c-mode "OPL"
+(define-derived-mode opl-mode basic-mode "OPL"
   "Organizer Programming Language mode."
   (setq font-lock-defaults '((opl-font-lock-keywords))))
 
