@@ -1,5 +1,8 @@
 # Emacs.
 *.elc
 
+# Test files.
+examples/
+
 # Misc.
 .DS_Store
