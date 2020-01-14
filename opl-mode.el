@@ -6,7 +6,7 @@
 ;; Homepage: http://github.com/nathanpc/opl-mode
 ;; Version: 0.1.0
 ;; Keywords: opl, basic, languages
-;; Package-Requires: ((emacs "24.1") (basic-mode "0.4.2"))
+;; Package-Requires: ((emacs "24.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -71,9 +71,50 @@
 		  ("[A-Za-z0-9$%]+\:\(?" . font-lock-function-name-face))))
 
 ;;;###autoload
-(define-derived-mode opl-mode basic-mode "OPL"
+(defun opl-indent-line ()
+  "Indents the current line of OPL code."
+  (interactive)
+  (beginning-of-line)  ; Jump to the beginning of the line to check stuff.
+  ;; Check if at the beginning of the buffer and reset the indentation.
+  (if (bobp)
+	  (indent-line-to 0))
+  (let ((not-indented t) cur-indent)
+	;; Check if we are at the end of a block and deindent if so.
+	(if (looking-at "^[ \t]*\\(ENDIF\\|ENDWH\\|ELSEIF\\|ELSE\\|UNTIL\\)")
+		(progn
+		  (save-excursion
+			(forward-line -1)
+			(setq cur-indent (- (current-indentation) tab-width)))
+		  ;; Make sure we don't indent negatively.
+		  (if (< cur-indent 0)
+			  (setq cur-indent 0)))
+	  (save-excursion
+		(while not-indented
+		  (forward-line -1)
+		  ;; Check if we have an end block above us, then indent the same a it.
+		  (if (looking-at "^[ \t]*\\(ENDIF\\|ENDWH\\|UNTIL\\)")
+			  (progn
+				(setq cur-indent (current-indentation))
+				(setq not-indented nil))
+			;; Check if we have a begin block above us, then indent the same.
+			(if (looking-at "^[ \t]*\\(IF\\|ELSE\\|ELSEIF\\|DO\\|WHILE\\)")
+				(progn
+				  (setq cur-indent (+ (current-indentation) tab-width))
+				  (setq not-indented nil))
+			  ;; If we reached the top of our file, then just give up indenting.
+			  (if (bobp)
+				  (setq not-indented nil)))))))
+	;; Actually indent the line.
+	(if cur-indent
+		(indent-line-to cur-indent)
+	  (indent-line-to 0))))
+
+;;;###autoload
+(define-derived-mode opl-mode prog-mode "OPL"
   "Organizer Programming Language mode."
-  (setq font-lock-defaults '((opl-font-lock-keywords))))
+  (setq font-lock-defaults '((opl-font-lock-keywords)))
+  (set-buffer-file-coding-system 'dos)
+  (set (make-local-variable 'indent-line-function) 'opl-indent-line))
 
 (provide 'opl-mode)
 ;;; opl-mode.el ends here
